@@ -1,0 +1,54 @@
+{% extends "main.html" %}
+{% load static %}
+{% block content %}
+
+<div class="d-flex flex-column align-items-center justify-content-center text-dark 
+     {% if weather_main == 'Clear' %} bg-clear
+     {% elif weather_main == 'Clouds' %} bg-clouds
+     {% elif weather_main == 'Rain' %} bg-rain
+     {% elif weather_main == 'Snow' %} bg-snow
+     {% elif weather_main == 'Thunderstorm' %} bg-thunderstorm
+     {% else %} bg-default
+     {% endif %}" style="min-height:100vh;">
+
+    <h2 class="mb-4">🌤 Weather App</h2>
+
+    <!-- Search Form -->
+    <form method="POST" class="d-flex mb-4 w-50">
+        {% csrf_token %}
+        <input type="text" class="form-control me-2" placeholder="Enter city name" name="city">
+        <button type="submit" class="btn btn-dark">Search</button>
+    </form>
+
+    <!-- Weather Card -->
+    {% if success %}
+    <div class="card shadow-lg rounded-3 text-center" style="width: 22rem;">
+
+        {% if city_image %}
+            <img src="{{ city_image }}" alt="{{ city }}" class="card-img-top" style="height:200px; object-fit:cover;">
+        {% endif %}
+
+        <div class="card-body">
+            <h4 class="card-title">{{ city }}</h4>
+
+            {% if icon %}
+                <img src="http://openweathermap.org/img/wn/{{ icon }}@2x.png" alt="Weather icon" class="mb-2">
+            {% endif %}
+
+            <h6 class="text-muted mb-3">{{ desc|title }}</h6>
+            <p>
+                <b>🌡 Temp:</b> {{ temp }} °C <br>
+                <b>💧 Humidity:</b> {{ humidity }}% <br>
+                <b>📅 Date:</b> {{ datetime|date:"D, d M Y" }} <br>
+                <b>⏰ Time:</b> {{ datetime|time:"h:i A" }}
+            </p>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="alert alert-danger w-50 text-center">City not found. Try again.</div>
+    {% endif %}
+
+</div>
+
+{% endblock content %}
